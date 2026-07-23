@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Pigskin League of Champions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --navy: #0B2D5E; --gold: #F5A623; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--navy); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      background: var(--navy);
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #fff;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    header {
+      background: var(--navy);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+      border-bottom: 2px solid var(--gold);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-left h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .header-left .subtitle {
+      font-size: 0.68rem;
+      color: var(--gold);
+      margin-top: 3px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .nav-buttons { display: flex; gap: 8px; }
+    .nav-btn {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: background 0.15s;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .nav-btn:hover { background: #ffc84a; }
+    .nav-btn.active { background: #fff; }
+
+    .hamburger {
+      display: none; position: relative;
+      font-size: 1.4rem; cursor: pointer;
+      background: none; border: none; color: var(--gold);
+      padding: 4px 8px; border-radius: 4px; line-height: 1;
+    }
+    .nav-dropdown {
+      display: none; position: absolute; top: calc(100% + 10px); right: 0;
+      background: var(--navy); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.55);
+      min-width: 190px; z-index: 100; overflow: hidden;
+    }
+    .nav-dropdown a {
+      display: block; padding: 13px 16px;
+      color: #fff; text-decoration: none;
+      font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.9rem;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: background 0.12s;
+    }
+    .nav-dropdown a:last-child { border-bottom: none; }
+    .nav-dropdown a:hover { background: rgba(255,255,255,0.1); }
+    .nav-dropdown a.active { color: var(--gold); }
+    .nav-dropdown.open { display: block; }
+
+    .hero {
+      text-align: center;
+      padding: 80px 24px 60px;
+    }
+    .hero-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(2.6rem, 7vw, 4.8rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      line-height: 1.05;
+    }
+    .hero-est {
+      font-family: 'Oswald', sans-serif;
+      color: var(--gold);
+      font-size: clamp(0.9rem, 2.5vw, 1.15rem);
+      font-weight: 600;
+      letter-spacing: 5px;
+      margin-top: 16px;
+      text-transform: uppercase;
+    }
+    .divider {
+      width: 72px; height: 3px;
+      background: var(--gold);
+      margin: 28px auto 0;
+      border-radius: 2px;
+    }
+
+    .section-label {
+      text-align: center;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      padding: 36px 24px 28px;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: 960px;
+      margin: 0 auto 72px;
+    }
+    .value-card {
+      padding: 56px 48px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 300px;
+    }
+    .card-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      line-height: 1.1;
+      margin-bottom: 22px;
+    }
+    .card-body {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.92);
+      max-width: 300px;
+    }
+    .card-orange { background: #F59B00; }
+    .card-green  { background: #27AE60; }
+    .card-blue   { background: #4D8FC4; }
+    .card-red    { background: #C0392B; }
+
+    @media (max-width: 900px) {
+      .nav-buttons { display: none; }
+      .hamburger { display: block; }
+    }
+    @media (max-width: 660px) {
+      .values-grid { grid-template-columns: 1fr; }
+      .value-card { padding: 44px 32px; min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Pigskin League of Champions</h1>
+    <div class="subtitle">★ Est. 2009 ★</div>
+  </div>
+  <nav class="nav-buttons">
+    <a class="nav-btn active" href="index.html">Home</a>
+    <a class="nav-btn" href="standings.html">Standings</a>
+    <a class="nav-btn" href="schedule.html">Schedule</a>
+    <a class="nav-btn" href="rules.html">Rules</a>
+    <a class="nav-btn" href="champions.html">Champions</a>
+  </nav>
+  <button class="hamburger" id="hamburger" aria-label="Navigation menu">&#9776;
+    <div class="nav-dropdown" id="navDropdown">
+      <a class="active" href="index.html">Home</a>
+      <a href="standings.html">Standings</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="rules.html">Rules</a>
+      <a href="champions.html">Champions</a>
+    </div>
+  </button>
+</header>
+
+<section class="hero">
+  <div class="hero-title">Pigskin League<br>of Champions</div>
+  <div class="hero-est">★★★★★ &nbsp;EST. 2009&nbsp; ★★★★★</div>
+  <div class="divider"></div>
+</section>
+
+<div class="section-label">League Values &amp; Expectations</div>
+
+<div class="values-grid">
+  <div class="value-card card-orange">
+    <div class="card-title">Ease of<br>Management</div>
+    <div class="card-body">The weekly roster management for each owner and the overall management of the league should require minimal time. The desire of the league is for minimal oversight and maximum freedom. Only when necessary, the Leadership Team will step in to correct an issue.</div>
+  </div>
+  <div class="value-card card-green">
+    <div class="card-title">Involved<br>Owners</div>
+    <div class="card-body">The ideal team owner will be responsive to communications, contribute to the culture of the league, and courteous in trade discussions with other owners. The league charges a league fee each year and provides cash awards as an incentive to each owner to stay involved.</div>
+  </div>
+  <div class="value-card card-blue">
+    <div class="card-title">Fair Play</div>
+    <div class="card-body">The primary duty of the Leadership Team is to guarantee that fair play is promoted. This includes making rules and owner adjustments as necessary. Each member of the league is responsible to manage their team in a way that insures the integrity of the League.</div>
+  </div>
+  <div class="value-card card-red">
+    <div class="card-title">Mirror<br>Real Life</div>
+    <div class="card-body">The scoring structure should be as close to real football as possible. All categories are assessed on a yearly basis to keep the League current with trends in the NFL. Scoring adjustments are made with care by the Leadership Team.</div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('navDropdown').classList.toggle('open');
+  });
+  document.addEventListener('click', () => {
+    document.getElementById('navDropdown').classList.remove('open');
+  });
+</script>
+</body>
+</html>

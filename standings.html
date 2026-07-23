@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>PLC — Standings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --navy: #0B2D5E; --gold: #F5A623; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--navy); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      background: var(--navy);
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #fff;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    header {
+      background: var(--navy);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+      border-bottom: 2px solid var(--gold);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-left h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .header-left .subtitle {
+      font-size: 0.68rem;
+      color: var(--gold);
+      margin-top: 3px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .nav-buttons { display: flex; gap: 8px; }
+    .nav-btn {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: background 0.15s;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .nav-btn:hover { background: #ffc84a; }
+    .nav-btn.active { background: #fff; }
+
+    .hamburger {
+      display: none; position: relative;
+      font-size: 1.4rem; cursor: pointer;
+      background: none; border: none; color: var(--gold);
+      padding: 4px 8px; border-radius: 4px; line-height: 1;
+    }
+    .nav-dropdown {
+      display: none; position: absolute; top: calc(100% + 10px); right: 0;
+      background: var(--navy); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.55);
+      min-width: 190px; z-index: 100; overflow: hidden;
+    }
+    .nav-dropdown a {
+      display: block; padding: 13px 16px;
+      color: #fff; text-decoration: none;
+      font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.9rem;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: background 0.12s;
+    }
+    .nav-dropdown a:last-child { border-bottom: none; }
+    .nav-dropdown a:hover { background: rgba(255,255,255,0.1); }
+    .nav-dropdown a.active { color: var(--gold); }
+    .nav-dropdown.open { display: block; }
+
+    .page-hero {
+      text-align: center;
+      padding: 48px 24px 40px;
+    }
+    .page-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .page-subtitle {
+      color: var(--gold);
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .divider {
+      width: 60px; height: 3px;
+      background: var(--gold);
+      margin: 20px auto 0;
+      border-radius: 2px;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 36px auto 72px;
+      padding: 0 20px;
+    }
+
+    .table-wrap {
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead {
+      background: rgba(0,0,0,0.35);
+    }
+    th {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      padding: 12px 16px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    th.c { text-align: center; }
+    td {
+      padding: 15px 16px;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      vertical-align: middle;
+    }
+    td.c { text-align: center; }
+    tbody tr:hover { background: rgba(255,255,255,0.04); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .rank {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-align: center;
+    }
+    .team-name { font-weight: 700; }
+    .owner { font-size: 0.75rem; color: rgba(255,255,255,0.45); margin-top: 2px; }
+
+    .record { font-weight: 700; font-size: 0.95rem; }
+    .pf { color: #86efac; }
+    .pa { color: #fca5a5; }
+
+    .streak-w { color: #22c55e; font-weight: 700; font-family: 'Oswald', sans-serif; }
+    .streak-l { color: #ef4444; font-weight: 700; font-family: 'Oswald', sans-serif; }
+
+    .playoff-border td {
+      border-top: 2px dashed rgba(245,166,35,0.5) !important;
+    }
+
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+    }
+    .legend-dash {
+      width: 28px;
+      border-top: 2px dashed rgba(245,166,35,0.5);
+    }
+
+    .hide-sm { }
+    @media (max-width: 900px) {
+      .nav-buttons { display: none; }
+      .hamburger { display: block; }
+    }
+    @media (max-width: 560px) {
+      .hide-sm { display: none; }
+      td, th { padding: 12px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Pigskin League of Champions</h1>
+    <div class="subtitle">★ Est. 2009 ★</div>
+  </div>
+  <nav class="nav-buttons">
+    <a class="nav-btn" href="index.html">Home</a>
+    <a class="nav-btn active" href="standings.html">Standings</a>
+    <a class="nav-btn" href="schedule.html">Schedule</a>
+    <a class="nav-btn" href="rules.html">Rules</a>
+    <a class="nav-btn" href="champions.html">Champions</a>
+  </nav>
+  <button class="hamburger" id="hamburger" aria-label="Navigation menu">&#9776;
+    <div class="nav-dropdown" id="navDropdown">
+      <a href="index.html">Home</a>
+      <a class="active" href="standings.html">Standings</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="rules.html">Rules</a>
+      <a href="champions.html">Champions</a>
+    </div>
+  </button>
+</header>
+
+<div class="page-hero">
+  <div class="page-title">Standings</div>
+  <div class="page-subtitle">2025 Season</div>
+  <div class="divider"></div>
+</div>
+
+<div class="container">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="c">#</th>
+          <th>Team</th>
+          <th class="c">W</th>
+          <th class="c">L</th>
+          <th class="c hide-sm">PF</th>
+          <th class="c hide-sm">PA</th>
+          <th class="c">Streak</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rank">1</td>
+          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
+          <td class="c record">0</td><td class="c record">0</td>
+          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
+          <td class="c"><span class="streak-w">—</span></td>
+        </tr>
+        <tr>
+          <td class="rank">2</td>
+          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
+          <td class="c record">0</td><td class="c record">0</td>
+          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
+          <td class="c"><span class="streak-w">—</span></td>
+        </tr>
+        <tr>
+          <td class="rank">3</td>
+          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
+          <td class="c record">0</td><td class="c record">0</td>
+          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
+          <td class="c"><span class="streak-w">—</span></td>
+        </tr>
+        <tr>
+          <td class="rank">4</td>
+          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
+          <td class="c record">0</td><td class="c record">0</td>
+          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
+          <td class="c"><span class="streak-w">—</span></td>
+        </tr>
+        <tr>
+          <td class="rank">5</td>
+          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
+          <td class="c record">0</td><td class="c record">0</td>
+          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
+          <td class="c"><span class="streak-l">—</span></td>
+        </tr>
+        <tr>
+          <td class="rank">6</td>
+          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
+          <td class="c record">0</td><td class="c record">0</td>
+          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
+          <td class="c"><span class="streak-l">—</span></td>
+        </tr>
+        <!-- Playoff cutline -->
+        <tr class="playoff-border">
+          <td class="rank">7</td>
+          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
+          <td class="c record">0</td><td class="c record">0</td>
+          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
+          <td class="c"><span class="streak-l">—</span></td>
+        </tr>
+        <tr>
+          <td class="rank">8</td>
+          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
+          <td class="c record">0</td><td class="c record">0</td>
+          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
+          <td class="c"><span class="streak-l">—</span></td>
+        </tr>
+        <tr>
+          <td class="rank">9</td>
+          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
+          <td class="c record">0</td><td class="c record">0</td>
+          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
+          <td class="c"><span class="streak-l">—</span></td>
+        </tr>
+        <tr>
+          <td class="rank">10</td>
+          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
+          <td class="c record">0</td><td class="c record">0</td>
+          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
+          <td class="c"><span class="streak-l">—</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="legend">
+    <div class="legend-dash"></div>
+    Playoff cutline
+  </div>
+</div>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('navDropdown').classList.toggle('open');
+  });
+  document.addEventListener('click', () => {
+    document.getElementById('navDropdown').classList.remove('open');
+  });
+</script>
+</body>
+</html>

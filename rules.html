@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>PLC — Rules</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --navy: #0B2D5E; --gold: #F5A623; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--navy); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      background: var(--navy);
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #fff;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    header {
+      background: var(--navy);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+      border-bottom: 2px solid var(--gold);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-left h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .header-left .subtitle {
+      font-size: 0.68rem;
+      color: var(--gold);
+      margin-top: 3px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .nav-buttons { display: flex; gap: 8px; }
+    .nav-btn {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: background 0.15s;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .nav-btn:hover { background: #ffc84a; }
+    .nav-btn.active { background: #fff; }
+
+    .hamburger {
+      display: none; position: relative;
+      font-size: 1.4rem; cursor: pointer;
+      background: none; border: none; color: var(--gold);
+      padding: 4px 8px; border-radius: 4px; line-height: 1;
+    }
+    .nav-dropdown {
+      display: none; position: absolute; top: calc(100% + 10px); right: 0;
+      background: var(--navy); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.55);
+      min-width: 190px; z-index: 100; overflow: hidden;
+    }
+    .nav-dropdown a {
+      display: block; padding: 13px 16px;
+      color: #fff; text-decoration: none;
+      font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.9rem;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: background 0.12s;
+    }
+    .nav-dropdown a:last-child { border-bottom: none; }
+    .nav-dropdown a:hover { background: rgba(255,255,255,0.1); }
+    .nav-dropdown a.active { color: var(--gold); }
+    .nav-dropdown.open { display: block; }
+
+    .page-hero {
+      text-align: center;
+      padding: 48px 24px 40px;
+    }
+    .page-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .page-subtitle {
+      color: var(--gold);
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .divider {
+      width: 60px; height: 3px;
+      background: var(--gold);
+      margin: 20px auto 0;
+      border-radius: 2px;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 36px auto 72px;
+      padding: 0 20px;
+    }
+
+    .rule-section {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .rule-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .rule-header:hover { background: rgba(255,255,255,0.04); }
+
+    .rule-header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .rule-icon {
+      font-size: 1.3rem;
+      width: 28px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .rule-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .rule-chevron {
+      color: var(--gold);
+      font-size: 1rem;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .rule-section.open .rule-chevron { transform: rotate(180deg); }
+
+    .rule-body {
+      display: none;
+      padding: 0 22px 22px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .rule-section.open .rule-body { display: block; }
+
+    .rule-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .rule-item:first-child { padding-top: 16px; }
+    .rule-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .rule-bullet {
+      color: var(--gold);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .rule-text { color: rgba(255,255,255,0.85); }
+    .rule-text strong { color: #fff; font-weight: 700; }
+
+    @media (max-width: 900px) {
+      .nav-buttons { display: none; }
+      .hamburger { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Pigskin League of Champions</h1>
+    <div class="subtitle">★ Est. 2009 ★</div>
+  </div>
+  <nav class="nav-buttons">
+    <a class="nav-btn" href="index.html">Home</a>
+    <a class="nav-btn" href="standings.html">Standings</a>
+    <a class="nav-btn" href="schedule.html">Schedule</a>
+    <a class="nav-btn active" href="rules.html">Rules</a>
+    <a class="nav-btn" href="champions.html">Champions</a>
+  </nav>
+  <button class="hamburger" id="hamburger" aria-label="Navigation menu">&#9776;
+    <div class="nav-dropdown" id="navDropdown">
+      <a href="index.html">Home</a>
+      <a href="standings.html">Standings</a>
+      <a href="schedule.html">Schedule</a>
+      <a class="active" href="rules.html">Rules</a>
+      <a href="champions.html">Champions</a>
+    </div>
+  </button>
+</header>
+
+<div class="page-hero">
+  <div class="page-title">League Rules</div>
+  <div class="page-subtitle">2025 Edition</div>
+  <div class="divider"></div>
+</div>
+
+<div class="container">
+
+  <div class="rule-section open">
+    <div class="rule-header" onclick="toggle(this)">
+      <div class="rule-header-left">
+        <div class="rule-icon">🏈</div>
+        <div class="rule-title">Scoring System</div>
+      </div>
+      <div class="rule-chevron">▼</div>
+    </div>
+    <div class="rule-body">
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Passing TD:</strong> Placeholder value pts</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Rushing TD:</strong> Placeholder value pts</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Receiving TD:</strong> Placeholder value pts</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Passing Yards:</strong> Placeholder value pts per yard</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Rushing Yards:</strong> Placeholder value pts per yard</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Receiving Yards:</strong> Placeholder value pts per yard</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Interception (thrown):</strong> Placeholder value pts</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Fumble Lost:</strong> Placeholder value pts</div></div>
+    </div>
+  </div>
+
+  <div class="rule-section">
+    <div class="rule-header" onclick="toggle(this)">
+      <div class="rule-header-left">
+        <div class="rule-icon">📋</div>
+        <div class="rule-title">Roster Requirements</div>
+      </div>
+      <div class="rule-chevron">▼</div>
+    </div>
+    <div class="rule-body">
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>QB:</strong> Placeholder slots</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>RB:</strong> Placeholder slots</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>WR:</strong> Placeholder slots</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>TE:</strong> Placeholder slots</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>FLEX (RB/WR/TE):</strong> Placeholder slots</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>K:</strong> Placeholder slots</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>DEF/ST:</strong> Placeholder slots</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Bench:</strong> Placeholder spots</div></div>
+    </div>
+  </div>
+
+  <div class="rule-section">
+    <div class="rule-header" onclick="toggle(this)">
+      <div class="rule-header-left">
+        <div class="rule-icon">🎯</div>
+        <div class="rule-title">Draft Format</div>
+      </div>
+      <div class="rule-chevron">▼</div>
+    </div>
+    <div class="rule-body">
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Format:</strong> Placeholder (snake, auction, etc.)</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Draft Order:</strong> Placeholder method (random, reverse standings, etc.)</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Time per Pick:</strong> Placeholder seconds</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Keeper Rules:</strong> Placeholder keeper policy</div></div>
+    </div>
+  </div>
+
+  <div class="rule-section">
+    <div class="rule-header" onclick="toggle(this)">
+      <div class="rule-header-left">
+        <div class="rule-icon">🔄</div>
+        <div class="rule-title">Trade Rules</div>
+      </div>
+      <div class="rule-chevron">▼</div>
+    </div>
+    <div class="rule-body">
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Trade Deadline:</strong> Placeholder week</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Review Period:</strong> Placeholder days before trades process</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Veto Policy:</strong> Placeholder veto process</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Max Players per Trade:</strong> Placeholder limit</div></div>
+    </div>
+  </div>
+
+  <div class="rule-section">
+    <div class="rule-header" onclick="toggle(this)">
+      <div class="rule-header-left">
+        <div class="rule-icon">📡</div>
+        <div class="rule-title">Waiver Wire</div>
+      </div>
+      <div class="rule-chevron">▼</div>
+    </div>
+    <div class="rule-body">
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Waiver Type:</strong> Placeholder (FAAB, standard priority, etc.)</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Waiver Budget:</strong> Placeholder amount</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Processing Day:</strong> Placeholder day and time</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Free Agent Period:</strong> Placeholder pickup rules</div></div>
+    </div>
+  </div>
+
+  <div class="rule-section">
+    <div class="rule-header" onclick="toggle(this)">
+      <div class="rule-header-left">
+        <div class="rule-icon">🏆</div>
+        <div class="rule-title">Playoff Format</div>
+      </div>
+      <div class="rule-chevron">▼</div>
+    </div>
+    <div class="rule-body">
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Playoff Teams:</strong> Placeholder number of teams</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Playoff Weeks:</strong> Placeholder week range</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Seeding:</strong> Placeholder seeding method</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Championship Week:</strong> Placeholder week</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Consolation Bracket:</strong> Placeholder format</div></div>
+    </div>
+  </div>
+
+  <div class="rule-section">
+    <div class="rule-header" onclick="toggle(this)">
+      <div class="rule-header-left">
+        <div class="rule-icon">💰</div>
+        <div class="rule-title">Buy-in &amp; Payouts</div>
+      </div>
+      <div class="rule-chevron">▼</div>
+    </div>
+    <div class="rule-body">
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Annual Buy-in:</strong> Placeholder amount per owner</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>1st Place:</strong> Placeholder payout</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>2nd Place:</strong> Placeholder payout</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>3rd Place:</strong> Placeholder payout</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Weekly High Score:</strong> Placeholder bonus</div></div>
+      <div class="rule-item"><div class="rule-bullet">▸</div><div class="rule-text"><strong>Regular Season Champion:</strong> Placeholder bonus</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('navDropdown').classList.toggle('open');
+  });
+  document.addEventListener('click', () => {
+    document.getElementById('navDropdown').classList.remove('open');
+  });
+
+  function toggle(header) {
+    header.closest('.rule-section').classList.toggle('open');
+  }
+</script>
+</body>
+</html>

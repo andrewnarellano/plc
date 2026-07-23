@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>PLC — Schedule</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --navy: #0B2D5E; --gold: #F5A623; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--navy); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      background: var(--navy);
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #fff;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    header {
+      background: var(--navy);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+      border-bottom: 2px solid var(--gold);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-left h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .header-left .subtitle {
+      font-size: 0.68rem;
+      color: var(--gold);
+      margin-top: 3px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .nav-buttons { display: flex; gap: 8px; }
+    .nav-btn {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: background 0.15s;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .nav-btn:hover { background: #ffc84a; }
+    .nav-btn.active { background: #fff; }
+
+    .hamburger {
+      display: none; position: relative;
+      font-size: 1.4rem; cursor: pointer;
+      background: none; border: none; color: var(--gold);
+      padding: 4px 8px; border-radius: 4px; line-height: 1;
+    }
+    .nav-dropdown {
+      display: none; position: absolute; top: calc(100% + 10px); right: 0;
+      background: var(--navy); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.55);
+      min-width: 190px; z-index: 100; overflow: hidden;
+    }
+    .nav-dropdown a {
+      display: block; padding: 13px 16px;
+      color: #fff; text-decoration: none;
+      font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.9rem;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: background 0.12s;
+    }
+    .nav-dropdown a:last-child { border-bottom: none; }
+    .nav-dropdown a:hover { background: rgba(255,255,255,0.1); }
+    .nav-dropdown a.active { color: var(--gold); }
+    .nav-dropdown.open { display: block; }
+
+    .page-hero {
+      text-align: center;
+      padding: 48px 24px 40px;
+    }
+    .page-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .page-subtitle {
+      color: var(--gold);
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .divider {
+      width: 60px; height: 3px;
+      background: var(--gold);
+      margin: 20px auto 0;
+      border-radius: 2px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto 72px;
+      padding: 0 20px;
+    }
+
+    /* Week selector */
+    .week-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 36px;
+    }
+    .week-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+      border-radius: 5px;
+      padding: 7px 14px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .week-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
+    .week-btn.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--navy);
+    }
+
+    /* Week content */
+    .week-panel { display: none; }
+    .week-panel.visible { display: block; }
+
+    .week-header {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .matchup-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .matchup-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .matchup-team {
+      font-weight: 700;
+      font-size: 0.95rem;
+      flex: 1;
+    }
+    .matchup-team.away { text-align: right; }
+    .matchup-team.home { text-align: left; }
+    .matchup-vs {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      padding: 0 8px;
+    }
+    .matchup-score {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.35);
+    }
+
+    @media (max-width: 900px) {
+      .nav-buttons { display: none; }
+      .hamburger { display: block; }
+    }
+    @media (max-width: 520px) {
+      .matchup-card { padding: 14px 16px; }
+      .matchup-team { font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Pigskin League of Champions</h1>
+    <div class="subtitle">★ Est. 2009 ★</div>
+  </div>
+  <nav class="nav-buttons">
+    <a class="nav-btn" href="index.html">Home</a>
+    <a class="nav-btn" href="standings.html">Standings</a>
+    <a class="nav-btn active" href="schedule.html">Schedule</a>
+    <a class="nav-btn" href="rules.html">Rules</a>
+    <a class="nav-btn" href="champions.html">Champions</a>
+  </nav>
+  <button class="hamburger" id="hamburger" aria-label="Navigation menu">&#9776;
+    <div class="nav-dropdown" id="navDropdown">
+      <a href="index.html">Home</a>
+      <a href="standings.html">Standings</a>
+      <a class="active" href="schedule.html">Schedule</a>
+      <a href="rules.html">Rules</a>
+      <a href="champions.html">Champions</a>
+    </div>
+  </button>
+</header>
+
+<div class="page-hero">
+  <div class="page-title">Schedule</div>
+  <div class="page-subtitle">2025 Season</div>
+  <div class="divider"></div>
+</div>
+
+<div class="container">
+  <div class="week-selector" id="weekSelector"></div>
+  <div id="weekPanels"></div>
+</div>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('navDropdown').classList.toggle('open');
+  });
+  document.addEventListener('click', () => {
+    document.getElementById('navDropdown').classList.remove('open');
+  });
+
+  const teams = [
+    'Team Name', 'Team Name', 'Team Name', 'Team Name', 'Team Name',
+    'Team Name', 'Team Name', 'Team Name', 'Team Name', 'Team Name'
+  ];
+
+  const totalWeeks = 14;
+  const selectorEl = document.getElementById('weekSelector');
+  const panelsEl = document.getElementById('weekPanels');
+
+  function buildMatchups(week) {
+    return [
+      [teams[0], teams[1]],
+      [teams[2], teams[3]],
+      [teams[4], teams[5]],
+      [teams[6], teams[7]],
+      [teams[8], teams[9]],
+    ];
+  }
+
+  for (let w = 1; w <= totalWeeks; w++) {
+    const btn = document.createElement('button');
+    btn.className = 'week-btn' + (w === 1 ? ' active' : '');
+    btn.textContent = 'Wk ' + w;
+    btn.dataset.week = w;
+    selectorEl.appendChild(btn);
+
+    const panel = document.createElement('div');
+    panel.className = 'week-panel' + (w === 1 ? ' visible' : '');
+    panel.dataset.week = w;
+
+    const label = document.createElement('div');
+    label.className = 'week-header';
+    label.textContent = 'Week ' + w + ' Matchups';
+    panel.appendChild(label);
+
+    const list = document.createElement('div');
+    list.className = 'matchup-list';
+    buildMatchups(w).forEach(([away, home]) => {
+      list.innerHTML += `
+        <div class="matchup-card">
+          <div class="matchup-team away">${away}</div>
+          <div class="matchup-vs">vs</div>
+          <div class="matchup-team home">${home}</div>
+        </div>`;
+    });
+    panel.appendChild(list);
+    panelsEl.appendChild(panel);
+  }
+
+  selectorEl.addEventListener('click', e => {
+    const btn = e.target.closest('.week-btn');
+    if (!btn) return;
+    const w = btn.dataset.week;
+    document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.week-panel').forEach(p => p.classList.remove('visible'));
+    btn.classList.add('active');
+    document.querySelector(`.week-panel[data-week="${w}"]`).classList.add('visible');
+  });
+</script>
+</body>
+</html>

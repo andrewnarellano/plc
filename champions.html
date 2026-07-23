@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>PLC — Past Champions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --navy: #0B2D5E; --gold: #F5A623; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--navy); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      background: var(--navy);
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #fff;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    header {
+      background: var(--navy);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+      border-bottom: 2px solid var(--gold);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-left h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .header-left .subtitle {
+      font-size: 0.68rem;
+      color: var(--gold);
+      margin-top: 3px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .nav-buttons { display: flex; gap: 8px; }
+    .nav-btn {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: background 0.15s;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .nav-btn:hover { background: #ffc84a; }
+    .nav-btn.active { background: #fff; }
+
+    .hamburger {
+      display: none; position: relative;
+      font-size: 1.4rem; cursor: pointer;
+      background: none; border: none; color: var(--gold);
+      padding: 4px 8px; border-radius: 4px; line-height: 1;
+    }
+    .nav-dropdown {
+      display: none; position: absolute; top: calc(100% + 10px); right: 0;
+      background: var(--navy); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.55);
+      min-width: 190px; z-index: 100; overflow: hidden;
+    }
+    .nav-dropdown a {
+      display: block; padding: 13px 16px;
+      color: #fff; text-decoration: none;
+      font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.9rem;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: background 0.12s;
+    }
+    .nav-dropdown a:last-child { border-bottom: none; }
+    .nav-dropdown a:hover { background: rgba(255,255,255,0.1); }
+    .nav-dropdown a.active { color: var(--gold); }
+    .nav-dropdown.open { display: block; }
+
+    .page-hero {
+      text-align: center;
+      padding: 48px 24px 40px;
+    }
+    .page-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .page-subtitle {
+      color: var(--gold);
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .divider {
+      width: 60px; height: 3px;
+      background: var(--gold);
+      margin: 20px auto 0;
+      border-radius: 2px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 36px auto 72px;
+      padding: 0 20px;
+    }
+
+    /* Featured champion banner */
+    .featured-champion {
+      background: linear-gradient(135deg, rgba(245,166,35,0.15) 0%, rgba(245,166,35,0.05) 100%);
+      border: 1px solid rgba(245,166,35,0.35);
+      border-radius: 12px;
+      padding: 36px 40px;
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .featured-champion::before {
+      content: '🏆';
+      position: absolute;
+      font-size: 8rem;
+      opacity: 0.06;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .featured-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .featured-year {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(3rem, 8vw, 5rem);
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .featured-team {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(1.3rem, 3.5vw, 2rem);
+      font-weight: 700;
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .featured-owner {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.55);
+      margin-top: 6px;
+    }
+    .featured-record {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.85rem;
+      color: var(--gold);
+      letter-spacing: 2px;
+      margin-top: 10px;
+    }
+
+    /* History table */
+    .history-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 16px;
+    }
+
+    .table-wrap {
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead { background: rgba(0,0,0,0.35); }
+    th {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      padding: 12px 16px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    th.c { text-align: center; }
+    td {
+      padding: 14px 16px;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      vertical-align: middle;
+    }
+    td.c { text-align: center; }
+    tbody tr:hover { background: rgba(255,255,255,0.04); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .year-cell {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .champ-name { font-weight: 700; }
+    .champ-owner { font-size: 0.75rem; color: rgba(255,255,255,0.45); margin-top: 2px; }
+    .runner-up { color: rgba(255,255,255,0.6); }
+    .trophy { font-size: 1rem; }
+
+    .hide-sm { }
+    @media (max-width: 900px) {
+      .nav-buttons { display: none; }
+      .hamburger { display: block; }
+    }
+    @media (max-width: 520px) {
+      .hide-sm { display: none; }
+      .featured-champion { padding: 28px 24px; }
+      td, th { padding: 12px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Pigskin League of Champions</h1>
+    <div class="subtitle">★ Est. 2009 ★</div>
+  </div>
+  <nav class="nav-buttons">
+    <a class="nav-btn" href="index.html">Home</a>
+    <a class="nav-btn" href="standings.html">Standings</a>
+    <a class="nav-btn" href="schedule.html">Schedule</a>
+    <a class="nav-btn" href="rules.html">Rules</a>
+    <a class="nav-btn active" href="champions.html">Champions</a>
+  </nav>
+  <button class="hamburger" id="hamburger" aria-label="Navigation menu">&#9776;
+    <div class="nav-dropdown" id="navDropdown">
+      <a href="index.html">Home</a>
+      <a href="standings.html">Standings</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="rules.html">Rules</a>
+      <a class="active" href="champions.html">Champions</a>
+    </div>
+  </button>
+</header>
+
+<div class="page-hero">
+  <div class="page-title">Past Champions</div>
+  <div class="page-subtitle">Hall of Fame</div>
+  <div class="divider"></div>
+</div>
+
+<div class="container">
+
+  <!-- Most recent champion featured -->
+  <div class="featured-champion">
+    <div class="featured-label">Reigning Champion</div>
+    <div class="featured-year">2024</div>
+    <div class="featured-team">Team Name</div>
+    <div class="featured-owner">Owner Name</div>
+    <div class="featured-record">Record · PF</div>
+  </div>
+
+  <div class="history-label">Championship History</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Champion</th>
+          <th class="hide-sm">Record</th>
+          <th class="hide-sm">Runner-Up</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="year-cell">2024</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2023</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2022</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2021</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2020</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2019</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2018</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2017</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2016</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2015</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2014</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2013</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2012</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2011</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2010</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+        <tr><td class="year-cell">2009</td><td><div class="champ-name">Team Name</div><div class="champ-owner">Owner</div></td><td class="hide-sm">—</td><td class="hide-sm runner-up">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('navDropdown').classList.toggle('open');
+  });
+  document.addEventListener('click', () => {
+    document.getElementById('navDropdown').classList.remove('open');
+  });
+</script>
+</body>
+</html>
