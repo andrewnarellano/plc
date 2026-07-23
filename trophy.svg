@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 400">
+  <defs>
+    <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#fff" stop-opacity="0.75"/>
+      <stop offset="45%"  stop-color="#fff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0.7"/>
+    </linearGradient>
+    <linearGradient id="tg2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#fff" stop-opacity="0.55"/>
+      <stop offset="50%"  stop-color="#fff" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0.5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Football body -->
+  <ellipse cx="108" cy="88" rx="46" ry="78" fill="url(#tg)" transform="rotate(-7 108 88)"/>
+
+  <!-- Equator seam -->
+  <path d="M63,93 Q108,79 153,88" fill="none" stroke="rgba(60,90,130,0.35)" stroke-width="2"/>
+
+  <!-- Laces -->
+  <line x1="97" y1="40" x2="117" y2="38" stroke="rgba(60,90,130,0.45)" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="95" y1="52" x2="118" y2="50" stroke="rgba(60,90,130,0.45)" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="96" y1="63" x2="118" y2="61" stroke="rgba(60,90,130,0.35)" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Neck connecting football to base -->
+  <polygon points="93,162 123,158 117,192 99,192" fill="url(#tg)"/>
+
+  <!-- Base left panel -->
+  <polygon points="99,192 117,192 108,390 14,390" fill="url(#tg2)"/>
+
+  <!-- Base right panel -->
+  <polygon points="99,192 117,192 206,390 108,390" fill="url(#tg)"/>
+
+  <!-- Inner shadow between panels -->
+  <polygon points="108,192 117,192 145,390 108,390" fill="rgba(60,90,130,0.12)"/>
+</svg>
