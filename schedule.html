@@ -277,6 +277,12 @@
       selectorEl.innerHTML = '';
       panelsEl.innerHTML = '';
 
+      var lastPlayedWeek = 1;
+      for (var w = 1; w <= totalWeeks; w++) {
+        var matchupsCheck = data.weeks[String(w)] || [];
+        if (matchupsCheck.some(function(m) { return m.completed; })) lastPlayedWeek = w;
+      }
+
       for (var w = 1; w <= totalWeeks; w++) {
         var optLabel = w <= regularSeasonWeeks
           ? 'Week ' + w
@@ -285,11 +291,12 @@
         var opt = document.createElement('option');
         opt.value = w;
         opt.textContent = optLabel;
+        if (w === lastPlayedWeek) opt.selected = true;
         selectorEl.appendChild(opt);
 
         // Build week panel
         var panel = document.createElement('div');
-        panel.className = 'week-panel' + (w === 1 ? ' visible' : '');
+        panel.className = 'week-panel' + (w === lastPlayedWeek ? ' visible' : '');
         panel.dataset.week = w;
 
         var headerLabel = w <= regularSeasonWeeks
