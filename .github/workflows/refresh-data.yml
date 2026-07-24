@@ -1,0 +1,41 @@
+name: Refresh PLC Data
+
+on:
+  schedule:
+    # Thursday nights (8–11:30 PM ET = 00–04 UTC Fri)
+    - cron: '*/10 0-4 * * 5'
+    # Sunday games, early window (noon–8 PM ET = 17–00 UTC Sun)
+    - cron: '*/10 17-23 * * 0'
+    # Sunday games, late window + Sunday Night (8 PM–midnight ET = 00–05 UTC Mon)
+    - cron: '*/10 0-5 * * 1'
+    # Monday nights (8–11:30 PM ET = 00–04 UTC Tue)
+    - cron: '*/10 0-4 * * 2'
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch ESPN data
+        env:
+          ESPN_S2: ${{ secrets.ESPN_S2 }}
+          SWID: ${{ secrets.SWID }}
+        run: python fetch_data.py
+
+      - name: Commit and push if data changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "Auto-refresh data [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+          git push

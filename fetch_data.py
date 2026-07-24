@@ -14,8 +14,8 @@ SEASON    = 2025
 BASE      = f"https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/{SEASON}/segments/0/leagues/{LEAGUE_ID}"
 
 COOKIES = {
-    "espn_s2": "AEBfjJ2szeOszntWJEB6ZyJRSpbISmH1TpiEiuurFWZ2TAtAsHc6pbgEHjg29MUXgySloxyluKVCl3cj3INtCKMfj9e6khvWdhFE3VqO9ZbH4pGk4I%2BVrp7CrWRKaMlDV%2BzO09dBFfJDjo22LvQggpjZ8BMOQJt%2BLI%2FO47mJR4ODcrmiWQOcUmk4qATrBKP2VLCDSWjiPZJeVvo2to%2F5dMubn7n%2FL7Coy2wNf%2BEEbRmsB86glraNOlNpxdITAEUwafHZR1Rk4RpTqBmae4JnILw6D4TIXnojcdvEtpT%2Fv2%2F8Ub2s4ASZzw5xZNp2H85eqoY%3D",
-    "SWID": "{CDCCE86E-74FE-4C8E-9570-8FA7118D6BDF}",
+    "espn_s2": os.environ.get("ESPN_S2", "AEBfjJ2szeOszntWJEB6ZyJRSpbISmH1TpiEiuurFWZ2TAtAsHc6pbgEHjg29MUXgySloxyluKVCl3cj3INtCKMfj9e6khvWdhFE3VqO9ZbH4pGk4I%2BVrp7CrWRKaMlDV%2BzO09dBFfJDjo22LvQggpjZ8BMOQJt%2BLI%2FO47mJR4ODcrmiWQOcUmk4qATrBKP2VLCDSWjiPZJeVvo2to%2F5dMubn7n%2FL7Coy2wNf%2BEEbRmsB86glraNOlNpxdITAEUwafHZR1Rk4RpTqBmae4JnILw6D4TIXnojcdvEtpT%2Fv2%2F8Ub2s4ASZzw5xZNp2H85eqoY%3D"),
+    "SWID": os.environ.get("SWID", "{CDCCE86E-74FE-4C8E-9570-8FA7118D6BDF}"),
 }
 HEADERS = {"Accept": "application/json", "User-Agent": "Mozilla/5.0"}
 
