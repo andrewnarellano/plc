@@ -106,24 +106,6 @@
       line-height: 1.05;
     }
     .hero-title .gold { color: var(--gold); display: block; }
-    .hero-league-name {
-      font-family: 'Graduate', sans-serif;
-      font-size: clamp(0.85rem, 2vw, 1.1rem);
-      font-weight: 400;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      color: rgba(255,255,255,0.55);
-      margin-top: 20px;
-    }
-    .hero-est {
-      font-family: 'Oswald', sans-serif;
-      color: #fff;
-      font-size: clamp(0.9rem, 2.5vw, 1.15rem);
-      font-weight: 600;
-      letter-spacing: 5px;
-      margin-top: 12px;
-      text-transform: uppercase;
-    }
     .divider {
       width: 72px; height: 3px;
       background: var(--gold);
@@ -177,6 +159,29 @@
     .card-blue   { background: #4D8FC4; }
     .card-red    { background: #C0392B; }
 
+    .brand-footer {
+      text-align: center;
+      padding: 56px 24px 64px;
+    }
+    .brand-footer-name {
+      font-family: 'Graduate', sans-serif;
+      font-size: clamp(0.95rem, 2.5vw, 1.3rem);
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: #fff;
+    }
+    .brand-footer-est {
+      font-family: 'Oswald', sans-serif;
+      color: #fff;
+      font-size: clamp(0.8rem, 2vw, 1rem);
+      font-weight: 600;
+      letter-spacing: 4px;
+      margin-top: 14px;
+      text-transform: uppercase;
+    }
+    .brand-footer .divider { margin-top: 20px; }
+
     @media (max-width: 900px) {
       .nav-buttons { display: none; }
       .hamburger { display: block; }
@@ -214,8 +219,6 @@
 
 <section class="hero">
   <div class="hero-title">Welcome to the<span class="gold">Battleground</span></div>
-  <div class="hero-league-name">Pigskin League of Champions</div>
-  <div class="hero-est"><span class="star">★★★★★</span> &nbsp;EST. 2009&nbsp; <span class="star">★★★★★</span></div>
   <div class="divider"></div>
 </section>
 
@@ -238,6 +241,12 @@
     <div class="card-title">Mirror<br>Real Life</div>
     <div class="card-body">The scoring structure should be as close to real football as possible. All categories are assessed on a yearly basis to keep the League current with trends in the NFL. Scoring adjustments are made with care by the Leadership Team.</div>
   </div>
+</div>
+
+<div class="brand-footer">
+  <div class="brand-footer-name">Pigskin League of Champions</div>
+  <div class="brand-footer-est"><span class="star">★★★★★</span> &nbsp;Est. 2009&nbsp; <span class="star">★★★★★</span></div>
+  <div class="divider"></div>
 </div>
 
 <script>
