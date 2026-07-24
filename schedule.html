@@ -177,32 +177,37 @@
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 8px;
-      padding: 18px 24px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .matchup-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
     }
     .matchup-team {
       font-weight: 700;
       font-size: 0.95rem;
-      flex: 1;
+      min-width: 0;
+      overflow-wrap: break-word;
+      word-break: break-word;
     }
-    .matchup-team.away { text-align: right; }
-    .matchup-team.home { text-align: left; }
     .matchup-vs {
       font-family: 'Oswald', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--gold);
-      letter-spacing: 2px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 3px;
       text-transform: uppercase;
-      flex-shrink: 0;
-      padding: 0 8px;
+      text-align: center;
+      padding: 2px 0;
     }
     .matchup-score {
       font-family: 'Oswald', sans-serif;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--gold);
       flex-shrink: 0;
@@ -214,7 +219,7 @@
     }
     @media (max-width: 520px) {
       .matchup-card { padding: 14px 16px; }
-      .matchup-team { font-size: 0.85rem; }
+      .matchup-team { font-size: 0.88rem; }
     }
   </style>
 </head>
@@ -328,11 +333,15 @@
 
           list.innerHTML +=
             '<div class="matchup-card">' +
-              '<div class="matchup-team away">' + awayNameHtml + '</div>' +
-              awayScoreHtml +
+              '<div class="matchup-row">' +
+                '<div class="matchup-team">' + awayNameHtml + '</div>' +
+                awayScoreHtml +
+              '</div>' +
               '<div class="matchup-vs">vs</div>' +
-              homeScoreHtml +
-              '<div class="matchup-team home">' + homeNameHtml + '</div>' +
+              '<div class="matchup-row">' +
+                '<div class="matchup-team">' + homeNameHtml + '</div>' +
+                homeScoreHtml +
+              '</div>' +
             '</div>';
         });
 
