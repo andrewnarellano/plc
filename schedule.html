@@ -129,31 +129,29 @@
     /* Week selector */
     .week-selector {
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
       justify-content: center;
       margin-bottom: 36px;
     }
-    .week-btn {
+    .week-select {
       background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: rgba(255,255,255,0.7);
-      border-radius: 5px;
-      padding: 7px 14px;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      border-radius: 6px;
+      padding: 10px 40px 10px 16px;
       font-family: 'Oswald', sans-serif;
-      font-size: 0.82rem;
+      font-size: 0.95rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       cursor: pointer;
-      transition: all 0.15s;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23F5A623' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      min-width: 220px;
     }
-    .week-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
-    .week-btn.active {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: var(--navy);
-    }
+    .week-select option { background: #0B2D5E; color: #fff; }
 
     /* Week content */
     .week-panel { display: none; }
@@ -252,7 +250,9 @@
 </div>
 
 <div class="container">
-  <div class="week-selector" id="weekSelector"></div>
+  <div class="week-selector">
+    <select class="week-select" id="weekSelector"></select>
+  </div>
   <div id="weekPanels"></div>
 </div>
 
@@ -268,8 +268,6 @@
   var selectorEl = document.getElementById('weekSelector');
   var panelsEl = document.getElementById('weekPanels');
 
-  selectorEl.innerHTML = '<span style="color:rgba(255,255,255,0.4);font-size:0.85rem;">Loading...</span>';
-
   fetch('./data/schedule.json')
     .then(function(res) { return res.json(); })
     .then(function(data) {
@@ -280,16 +278,14 @@
       panelsEl.innerHTML = '';
 
       for (var w = 1; w <= totalWeeks; w++) {
-        // Build week button label
-        var btnLabel = w <= regularSeasonWeeks
-          ? 'Wk ' + w
-          : 'Playoffs - Wk ' + w;
+        var optLabel = w <= regularSeasonWeeks
+          ? 'Week ' + w
+          : 'Playoffs — Week ' + w;
 
-        var btn = document.createElement('button');
-        btn.className = 'week-btn' + (w === 1 ? ' active' : '');
-        btn.textContent = btnLabel;
-        btn.dataset.week = w;
-        selectorEl.appendChild(btn);
+        var opt = document.createElement('option');
+        opt.value = w;
+        opt.textContent = optLabel;
+        selectorEl.appendChild(opt);
 
         // Build week panel
         var panel = document.createElement('div');
@@ -337,13 +333,9 @@
         panelsEl.appendChild(panel);
       }
 
-      selectorEl.addEventListener('click', function(e) {
-        var btn = e.target.closest('.week-btn');
-        if (!btn) return;
-        var w = btn.dataset.week;
-        document.querySelectorAll('.week-btn').forEach(function(b) { b.classList.remove('active'); });
+      selectorEl.addEventListener('change', function() {
+        var w = selectorEl.value;
         document.querySelectorAll('.week-panel').forEach(function(p) { p.classList.remove('visible'); });
-        btn.classList.add('active');
         document.querySelector('.week-panel[data-week="' + w + '"]').classList.add('visible');
       });
     })
