@@ -1,0 +1,149 @@
+{
+  "season": 2025,
+  "standings": [
+    {
+      "rank": 1,
+      "teamId": 1,
+      "name": "Bucky's RBQ",
+      "abbrev": "BG",
+      "owner": "Brandon Godwin",
+      "wins": 11,
+      "losses": 3,
+      "pointsFor": 1703.5,
+      "pointsAgainst": 1402.2,
+      "streak": "L2"
+    },
+    {
+      "rank": 2,
+      "teamId": 9,
+      "name": "Single Dues Destiny",
+      "abbrev": "Four",
+      "owner": "Stephen Endres",
+      "wins": 9,
+      "losses": 5,
+      "pointsFor": 1499.1,
+      "pointsAgainst": 1436.8,
+      "streak": "L2"
+    },
+    {
+      "rank": 3,
+      "teamId": 2,
+      "name": "Spit On That Dak",
+      "abbrev": "RACK",
+      "owner": "Christopher Rackley",
+      "wins": 8,
+      "losses": 6,
+      "pointsFor": 1596.3,
+      "pointsAgainst": 1527.1,
+      "streak": "L1"
+    },
+    {
+      "rank": 4,
+      "teamId": 5,
+      "name": "Bucknuts",
+      "abbrev": "BNTS",
+      "owner": "Justin Pidcock",
+      "wins": 8,
+      "losses": 6,
+      "pointsFor": 1311.7,
+      "pointsAgainst": 1404.6,
+      "streak": "W2"
+    },
+    {
+      "rank": 5,
+      "teamId": 12,
+      "name": "OldGuysRule#GLEAGUE",
+      "abbrev": "6557",
+      "owner": "jeffrey godwin",
+      "wins": 7,
+      "losses": 7,
+      "pointsFor": 1692.7,
+      "pointsAgainst": 1666.7,
+      "streak": "L1"
+    },
+    {
+      "rank": 6,
+      "teamId": 8,
+      "name": "CeeDee Playa",
+      "abbrev": "CDP",
+      "owner": "Andrew Arellano",
+      "wins": 7,
+      "losses": 7,
+      "pointsFor": 1555.4,
+      "pointsAgainst": 1598.4,
+      "streak": "W1"
+    },
+    {
+      "rank": 7,
+      "teamId": 7,
+      "name": "Mister Dobbins' Nabershood",
+      "abbrev": "MDN",
+      "owner": "Justin Deres",
+      "wins": 7,
+      "losses": 7,
+      "pointsFor": 1538.4,
+      "pointsAgainst": 1504.1,
+      "streak": "L2"
+    },
+    {
+      "rank": 8,
+      "teamId": 10,
+      "name": "Lamarvel Universe",
+      "abbrev": "MYER",
+      "owner": "George Myers",
+      "wins": 7,
+      "losses": 7,
+      "pointsFor": 1322.7,
+      "pointsAgainst": 1422.2,
+      "streak": "W2"
+    },
+    {
+      "rank": 9,
+      "teamId": 4,
+      "name": "Herb Your Enthusiasm",
+      "abbrev": "Chps",
+      "owner": "Will Chipman",
+      "wins": 6,
+      "losses": 8,
+      "pointsFor": 1541.5,
+      "pointsAgainst": 1582.0,
+      "streak": "W3"
+    },
+    {
+      "rank": 10,
+      "teamId": 11,
+      "name": "Amish Mafia",
+      "abbrev": "REEM",
+      "owner": "Michael Reem",
+      "wins": 6,
+      "losses": 8,
+      "pointsFor": 1573.4,
+      "pointsAgainst": 1518.5,
+      "streak": "L1"
+    },
+    {
+      "rank": 11,
+      "teamId": 6,
+      "name": "AnybodyBUT BAL/NE",
+      "abbrev": "RH",
+      "owner": "Ryan Harvey",
+      "wins": 4,
+      "losses": 10,
+      "pointsFor": 1593.4,
+      "pointsAgainst": 1662.9,
+      "streak": "W1"
+    },
+    {
+      "rank": 12,
+      "teamId": 3,
+      "name": "Brockton Backfield ",
+      "abbrev": "RBTD",
+      "owner": "Schimri Yoyo",
+      "wins": 4,
+      "losses": 10,
+      "pointsFor": 1314.6,
+      "pointsAgainst": 1517.2,
+      "streak": "W1"
+    }
+  ]
+}

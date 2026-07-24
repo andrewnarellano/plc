@@ -252,92 +252,8 @@
           <th class="c">Streak</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td class="rank">1</td>
-          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
-          <td class="c record">0</td><td class="c record">0</td>
-          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
-          <td class="c"><span class="streak-w">—</span></td>
-        </tr>
-        <tr>
-          <td class="rank">2</td>
-          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
-          <td class="c record">0</td><td class="c record">0</td>
-          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
-          <td class="c"><span class="streak-w">—</span></td>
-        </tr>
-        <tr>
-          <td class="rank">3</td>
-          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
-          <td class="c record">0</td><td class="c record">0</td>
-          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
-          <td class="c"><span class="streak-w">—</span></td>
-        </tr>
-        <tr>
-          <td class="rank">4</td>
-          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
-          <td class="c record">0</td><td class="c record">0</td>
-          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
-          <td class="c"><span class="streak-w">—</span></td>
-        </tr>
-        <tr>
-          <td class="rank">5</td>
-          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
-          <td class="c record">0</td><td class="c record">0</td>
-          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
-          <td class="c"><span class="streak-l">—</span></td>
-        </tr>
-        <tr>
-          <td class="rank">6</td>
-          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
-          <td class="c record">0</td><td class="c record">0</td>
-          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
-          <td class="c"><span class="streak-l">—</span></td>
-        </tr>
-        <tr>
-          <td class="rank">7</td>
-          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
-          <td class="c record">0</td><td class="c record">0</td>
-          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
-          <td class="c"><span class="streak-l">—</span></td>
-        </tr>
-        <!-- Playoff cutline -->
-        <tr class="playoff-border">
-          <td class="rank">8</td>
-          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
-          <td class="c record">0</td><td class="c record">0</td>
-          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
-          <td class="c"><span class="streak-l">—</span></td>
-        </tr>
-        <tr>
-          <td class="rank">9</td>
-          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
-          <td class="c record">0</td><td class="c record">0</td>
-          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
-          <td class="c"><span class="streak-l">—</span></td>
-        </tr>
-        <tr>
-          <td class="rank">10</td>
-          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
-          <td class="c record">0</td><td class="c record">0</td>
-          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
-          <td class="c"><span class="streak-l">—</span></td>
-        </tr>
-        <tr>
-          <td class="rank">11</td>
-          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
-          <td class="c record">0</td><td class="c record">0</td>
-          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
-          <td class="c"><span class="streak-l">—</span></td>
-        </tr>
-        <tr>
-          <td class="rank">12</td>
-          <td><div class="team-name">Team Name</div><div class="owner">Owner</div></td>
-          <td class="c record">0</td><td class="c record">0</td>
-          <td class="c pf hide-sm">—</td><td class="c pa hide-sm">—</td>
-          <td class="c"><span class="streak-l">—</span></td>
-        </tr>
+      <tbody id="standingsBody">
+        <tr><td colspan="7" style="text-align:center;padding:32px;color:rgba(255,255,255,0.4);">Loading...</td></tr>
       </tbody>
     </table>
   </div>
@@ -355,6 +271,35 @@
   document.addEventListener('click', () => {
     document.getElementById('navDropdown').classList.remove('open');
   });
+
+  fetch('./data/standings.json')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      var tbody = document.getElementById('standingsBody');
+      tbody.innerHTML = '';
+      data.standings.forEach(function(team) {
+        var isPlayoffBorder = team.rank === 8;
+        var streakClass = team.streak.charAt(0) === 'W' ? 'streak-w' : 'streak-l';
+        var tr = document.createElement('tr');
+        if (isPlayoffBorder) tr.className = 'playoff-border';
+        tr.innerHTML =
+          '<td class="rank">' + team.rank + '</td>' +
+          '<td>' +
+            '<div class="team-name">' + team.name + '</div>' +
+            '<div class="owner">' + team.owner + '</div>' +
+          '</td>' +
+          '<td class="c record">' + team.wins + '</td>' +
+          '<td class="c record">' + team.losses + '</td>' +
+          '<td class="c pf hide-sm">' + team.pointsFor.toFixed(1) + '</td>' +
+          '<td class="c pa hide-sm">' + team.pointsAgainst.toFixed(1) + '</td>' +
+          '<td class="c"><span class="' + streakClass + '">' + team.streak + '</span></td>';
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(function() {
+      document.getElementById('standingsBody').innerHTML =
+        '<tr><td colspan="7" style="text-align:center;padding:32px;color:rgba(255,255,255,0.4);">Failed to load standings.</td></tr>';
+    });
 </script>
 </body>
 </html>

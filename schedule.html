@@ -264,65 +264,97 @@
     document.getElementById('navDropdown').classList.remove('open');
   });
 
-  const teams = [
-    'Team Name', 'Team Name', 'Team Name', 'Team Name', 'Team Name', 'Team Name',
-    'Team Name', 'Team Name', 'Team Name', 'Team Name', 'Team Name', 'Team Name'
-  ];
+  var selectorEl = document.getElementById('weekSelector');
+  var panelsEl = document.getElementById('weekPanels');
 
-  const totalWeeks = 14;
-  const selectorEl = document.getElementById('weekSelector');
-  const panelsEl = document.getElementById('weekPanels');
+  selectorEl.innerHTML = '<span style="color:rgba(255,255,255,0.4);font-size:0.85rem;">Loading...</span>';
 
-  function buildMatchups(week) {
-    return [
-      [teams[0],  teams[1]],
-      [teams[2],  teams[3]],
-      [teams[4],  teams[5]],
-      [teams[6],  teams[7]],
-      [teams[8],  teams[9]],
-      [teams[10], teams[11]],
-    ];
-  }
+  fetch('./data/schedule.json')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      var totalWeeks = data.totalWeeks;
+      var regularSeasonWeeks = data.regularSeasonWeeks;
 
-  for (let w = 1; w <= totalWeeks; w++) {
-    const btn = document.createElement('button');
-    btn.className = 'week-btn' + (w === 1 ? ' active' : '');
-    btn.textContent = 'Wk ' + w;
-    btn.dataset.week = w;
-    selectorEl.appendChild(btn);
+      selectorEl.innerHTML = '';
+      panelsEl.innerHTML = '';
 
-    const panel = document.createElement('div');
-    panel.className = 'week-panel' + (w === 1 ? ' visible' : '');
-    panel.dataset.week = w;
+      for (var w = 1; w <= totalWeeks; w++) {
+        // Build week button label
+        var btnLabel = w <= regularSeasonWeeks
+          ? 'Wk ' + w
+          : 'Playoffs - Wk ' + w;
 
-    const label = document.createElement('div');
-    label.className = 'week-header';
-    label.textContent = 'Week ' + w + ' Matchups';
-    panel.appendChild(label);
+        var btn = document.createElement('button');
+        btn.className = 'week-btn' + (w === 1 ? ' active' : '');
+        btn.textContent = btnLabel;
+        btn.dataset.week = w;
+        selectorEl.appendChild(btn);
 
-    const list = document.createElement('div');
-    list.className = 'matchup-list';
-    buildMatchups(w).forEach(([away, home]) => {
-      list.innerHTML += `
-        <div class="matchup-card">
-          <div class="matchup-team away">${away}</div>
-          <div class="matchup-vs">vs</div>
-          <div class="matchup-team home">${home}</div>
-        </div>`;
+        // Build week panel
+        var panel = document.createElement('div');
+        panel.className = 'week-panel' + (w === 1 ? ' visible' : '');
+        panel.dataset.week = w;
+
+        var headerLabel = w <= regularSeasonWeeks
+          ? 'Week ' + w + ' Matchups'
+          : 'Playoffs — Week ' + w + ' Matchups';
+
+        var label = document.createElement('div');
+        label.className = 'week-header';
+        label.textContent = headerLabel;
+        panel.appendChild(label);
+
+        var list = document.createElement('div');
+        list.className = 'matchup-list';
+
+        var matchups = data.weeks[String(w)] || [];
+        matchups.forEach(function(matchup) {
+          var away = matchup.away;
+          var home = matchup.home;
+
+          var awayNameHtml = away.winner ? '<strong>' + away.name + '</strong>' : away.name;
+          var homeNameHtml = home.winner ? '<strong>' + home.name + '</strong>' : home.name;
+
+          var midHtml;
+          if (matchup.completed) {
+            var awayScore = away.score.toFixed(2);
+            var homeScore = home.score.toFixed(2);
+            midHtml =
+              '<div class="matchup-vs" style="display:flex;flex-direction:column;align-items:center;gap:2px;">' +
+                '<span style="font-size:1rem;letter-spacing:1px;">' + awayScore + '</span>' +
+                '<span style="font-size:0.65rem;letter-spacing:2px;opacity:0.6;">vs</span>' +
+                '<span style="font-size:1rem;letter-spacing:1px;">' + homeScore + '</span>' +
+              '</div>';
+          } else {
+            midHtml = '<div class="matchup-vs">vs</div>';
+          }
+
+          list.innerHTML +=
+            '<div class="matchup-card">' +
+              '<div class="matchup-team away">' + awayNameHtml + '</div>' +
+              midHtml +
+              '<div class="matchup-team home">' + homeNameHtml + '</div>' +
+            '</div>';
+        });
+
+        panel.appendChild(list);
+        panelsEl.appendChild(panel);
+      }
+
+      selectorEl.addEventListener('click', function(e) {
+        var btn = e.target.closest('.week-btn');
+        if (!btn) return;
+        var w = btn.dataset.week;
+        document.querySelectorAll('.week-btn').forEach(function(b) { b.classList.remove('active'); });
+        document.querySelectorAll('.week-panel').forEach(function(p) { p.classList.remove('visible'); });
+        btn.classList.add('active');
+        document.querySelector('.week-panel[data-week="' + w + '"]').classList.add('visible');
+      });
+    })
+    .catch(function() {
+      selectorEl.innerHTML = '';
+      panelsEl.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.4);padding:32px;">Failed to load schedule.</p>';
     });
-    panel.appendChild(list);
-    panelsEl.appendChild(panel);
-  }
-
-  selectorEl.addEventListener('click', e => {
-    const btn = e.target.closest('.week-btn');
-    if (!btn) return;
-    const w = btn.dataset.week;
-    document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.week-panel').forEach(p => p.classList.remove('visible'));
-    btn.classList.add('active');
-    document.querySelector(`.week-panel[data-week="${w}"]`).classList.add('visible');
-  });
 </script>
 </body>
 </html>
